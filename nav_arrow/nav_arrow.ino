@@ -82,20 +82,19 @@ void setup()
 void loop() { 
 
     // send data only when you receive data:
-   if (Serial.available() > 0) {
+    if (Serial.available() > 0) {
        // read the incoming byte:
        incomingByte = Serial.read();
-
-        Serial.print(incomingByte);
-
-        // Parse R,L and S control bytes to drive servo
-        if (incomingByte == 'R') {
-           pos = goRight(myservo, pos);
-        } else if (incomingByte == 'L') {
-           pos = goLeft(myservo, pos);
-        } else if (incomingByte == 'S') {
-           pos = goCenter(myservo, pos);
-        }
+    
+       Serial.print(incomingByte);
+    
+       // Parse R,L and S control bytes to drive servo
+       if (incomingByte == 'R') {
+          pos = goRight(myservo, pos);
+       } else if (incomingByte == 'L') {
+          pos = goLeft(myservo, pos);
+       } else if (incomingByte == 'S') {
+          pos = goCenter(myservo, pos);
+       }
     }
 } 
-
