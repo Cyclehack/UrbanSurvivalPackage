@@ -17,11 +17,11 @@ float note_ratio = 2.0;
 
 //Mario main theme melody
 int melody[] = {
-    NOTE_B4, 0, NOTE_B7, 0
+    NOTE_B6, 0, 0, 0
 };
 //Mario main them tempo
 int tempo[] = {
-    12, 12, 12, 12
+    12, 6, 12, 6
 };
 
 /**
@@ -99,13 +99,15 @@ void playSong() {
   
     // The longer the song is played the faster it should play
     if (playedLast > 0) {
-      note_ratio -= 0.1;
+      if (note_ratio > 0.4) {
+        note_ratio -= 0.2;
+      }
     } else {
       // Reset the note speed
       note_ratio = def_note_ratio;
     }
     
-    number_of_melody_notes = 3;
+    int number_of_melody_notes = 3;
     for (int thisNote = 0; thisNote < number_of_melody_notes; thisNote++) {
 
         int noteDuration = 1000/tempo[thisNote];
@@ -124,7 +126,7 @@ void playSong() {
 void setup() 
 { 
     Serial.begin(9600);
-    Serial.print("\n");
+    Serial.print("\n"); 
     myservo.attach(9);  // attaches the servo on pin 9 to the servo object 
 } 
 
