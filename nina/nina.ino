@@ -12,61 +12,16 @@
 
 #define melodyPin 8
 
+float def_note_ratio = 2.0;
 float note_ratio = 2.0;
 
 //Mario main theme melody
 int melody[] = {
-    NOTE_E7, NOTE_E7, 0, NOTE_E7, 
-    0, NOTE_C7, NOTE_E7, 0,
-    NOTE_G7, 0, 0,  0,
-    NOTE_G6, 0, 0, 0, 
-
-    NOTE_C7, 0, 0, NOTE_G6, 
-    0, 0, NOTE_E6, 0, 
-    0, NOTE_A6, 0, NOTE_B6, 
-    0, NOTE_AS6, NOTE_A6, 0, 
-
-    NOTE_G6, NOTE_E7, NOTE_G7, 
-    NOTE_A7, 0, NOTE_F7, NOTE_G7, 
-    0, NOTE_E7, 0,NOTE_C7, 
-    NOTE_D7, NOTE_B6, 0, 0,
-
-    NOTE_C7, 0, 0, NOTE_G6, 
-    0, 0, NOTE_E6, 0, 
-    0, NOTE_A6, 0, NOTE_B6, 
-    0, NOTE_AS6, NOTE_A6, 0, 
-
-    NOTE_G6, NOTE_E7, NOTE_G7, 
-    NOTE_A7, 0, NOTE_F7, NOTE_G7, 
-    0, NOTE_E7, 0,NOTE_C7, 
-    NOTE_D7, NOTE_B6, 0, 0
+    NOTE_B4, 0, NOTE_B7, 0
 };
 //Mario main them tempo
 int tempo[] = {
-    12, 12, 12, 12, 
-    12, 12, 12, 12,
-    12, 12, 12, 12,
-    12, 12, 12, 12, 
-
-    12, 12, 12, 12,
-    12, 12, 12, 12, 
-    12, 12, 12, 12, 
-    12, 12, 12, 12, 
-
-    9, 9, 9,
-    12, 12, 12, 12,
-    12, 12, 12, 12,
-    12, 12, 12, 12,
-
-    12, 12, 12, 12,
-    12, 12, 12, 12,
-    12, 12, 12, 12,
-    12, 12, 12, 12,
-
-    9, 9, 9,
-    12, 12, 12, 12,
-    12, 12, 12, 12,
-    12, 12, 12, 12,
+    12, 12, 12, 12
 };
 
 /**
@@ -137,8 +92,21 @@ int goRight(Servo servo, int cur_pos) {
     Serial.print("Turn Right\n");
     return new_pos;
 }
+
+int playedLast = 0;
+
 void playSong() {
-    for (int thisNote = 0; thisNote < 15; thisNote++) {
+  
+    // The longer the song is played the faster it should play
+    if (playedLast > 0) {
+      note_ratio -= 0.1;
+    } else {
+      // Reset the note speed
+      note_ratio = def_note_ratio;
+    }
+    
+    number_of_melody_notes = 3;
+    for (int thisNote = 0; thisNote < number_of_melody_notes; thisNote++) {
 
         int noteDuration = 1000/tempo[thisNote];
         tone(8, melody[thisNote],noteDuration);
@@ -150,6 +118,7 @@ void playSong() {
         // stop the tone playing:
         noTone(8);
     }
+    playedLast += 1;
 }
 
 void setup() 
@@ -162,13 +131,13 @@ void setup()
 
 void loop() { 
 
-
     // to calculate the note duration, take one second 
     // divided by the note type.
     //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
     if (digitalRead(2)) {
         Serial.print("Button pushed");
         playSong();
+        delay(200);
     } else {
         
         // send data only when you receive data:
@@ -187,5 +156,8 @@ void loop() {
                 pos = goCenter(myservo, pos);
             }
         }
+        
+        // Reset the played last
+        playedLast = 0;
     } 
 }
